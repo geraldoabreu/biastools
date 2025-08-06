@@ -1,12 +1,17 @@
 # Bubble.io Implementation Tutorial: Bidirectional Distortion Correction Formula
 
 ## Overview
-This tutorial provides step-by-step instructions for implementing the bidirectional distortion correction formula in Bubble.io. The formula detects and corrects response bias in psychological tests by adjusting scores when there are too many extreme responses (either 5s or 1s).
+This tutorial provides step-by-step instructions for implementing the bidirectional distortion correction formula **specifically in Bubble.io** (no-code platform). The formula detects and corrects response bias in psychological tests by adjusting scores when there are too many extreme responses (either 5s or 1s).
+
+> **Note:** This tutorial is designed for Bubble.io's visual programming environment. For code-based implementations, see:
+> - `tutorial-python.md` - Python implementation
+> - `tutorial-javascript.md` - JavaScript implementation
 
 ## Prerequisites
-- Active Bubble.io account
-- Basic understanding of Bubble workflows and data types
-- Familiarity with Bubble's expression editor
+- Active **Bubble.io** account with editor access
+- Basic understanding of Bubble.io workflows and data types
+- Familiarity with Bubble.io's visual expression editor
+- Understanding of no-code development concepts
 
 ## Step 1: Database Setup
 

@@ -60,9 +60,7 @@ Then navigate to `http://localhost:8000/psychological-assessment-tool.html`
 
 ## Demo
 
-🔗 **Live Demo**: [Access the psychological assessment tool](http://localhost:8000/psychological-assessment-tool.html)
-
-*Note: The demo link will work when the local server is running.*
+🔗 **Live Demo**: [Access the psychological assessment tool](https://geraldoabreu.github.io/biastools/psychological-assessment-tool.html)
 
 ## Scientific Foundation
 

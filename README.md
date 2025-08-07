@@ -111,7 +111,7 @@ This project is open source and available under the MIT License, allowing commer
 
 ## 🔗 Useful Links
 
-- [Distortion Correction Formula Demo](http://localhost:8000/psychological-assessment-tool.html)
+- [Distortion Correction Formula Demo](https://geraldoabreu.github.io/biastools/psychological-assessment-tool.html)
 - [Technical Documentation](solutions/distortion-correction-formula/docs/)
 - [Implementation Tutorials](solutions/distortion-correction-formula/implementation/)
 
@@ -120,3 +120,46 @@ This project is open source and available under the MIT License, allowing commer
 **Version**: 1.0.0  
 **Last Update**: January 2025  
 **Maintainers**: BiasCorrection Hub Team
+
+BiasTools includes comprehensive tutorials for implementing the distortion correction algorithm across different platforms:
+
+- **Bubble.io**: `tutorial.md` - Complete no-code implementation guide for visual development
+- **Python**: `tutorial-python.md` - Full Python implementation with classes, unit testing, web integration, and data analysis
+- **JavaScript**: `tutorial-javascript.md` - Browser and Node.js implementations with React components, REST APIs, and performance optimization
+
+## Project Structure
+
+```
+├── psychological-assessment-tool.html   # Main assessment application
+├── README.md                           # Project documentation (this file)
+├── tutorial.md                         # Bubble.io implementation guide
+├── tutorial-python.md                  # Python implementation guide
+├── tutorial-javascript.md              # JavaScript implementation guide
+├── distortion-correction-formula.md    # Technical formula documentation
+├── scientific-background-article.md    # Research background and validation
+└── start-server.ps1                   # PowerShell server script for Windows
+```
+
+## Use Cases
+
+- **HR Assessments**: Employee competency evaluations with bias correction
+- **Educational Testing**: Student assessment tools with improved accuracy
+- **Research Applications**: Psychological studies requiring unbiased response collection
+- **Clinical Settings**: Mental health assessments with response pattern analysis
+- **Training Programs**: Skill evaluation tools for professional development
+
+## Contributing
+
+We welcome contributions to BiasTools! Whether you're interested in:
+- Improving the assessment interface
+- Enhancing the distortion correction algorithm
+- Adding new platform implementations
+- Expanding the scientific documentation
+- Creating additional assessment tools
+
+Please feel free to submit issues, feature requests, or pull requests.
+
+## License
+
+This project is open source and available under the MIT License, making it free for both commercial and non-commercial use.
+>>>>>>> 39272c33933bdd9dfca8129038df72e2aca9c562

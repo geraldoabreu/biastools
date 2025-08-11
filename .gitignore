@@ -1,3 +1,38 @@
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.code-workspace
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# --- Node / JS ---
+node_modules/
+dist/
+.next/
+.out/
+
+# --- Cursor & AI tooling artifacts ---
+.cursor/
+.cursorignore
+.cursorindexingignore
+.superdesign/
+.specstory/
+specstory/
+.windsurfrules
+CLAUDE.md
+
+# --- Logs / temp ---
+*.log
+*.tmp
+tmp/
 # Editor and IDE files
 .cursor/
 .vscode/

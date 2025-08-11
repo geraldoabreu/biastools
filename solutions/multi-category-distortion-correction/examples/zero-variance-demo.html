@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero-Variance Fix Demonstration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid;
+        }
+        .before {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        .after {
+            border-color: #51cf66;
+            background: #f4fdf5;
+        }
+        .scores {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #667eea; }
+        h3 { margin-top: 0; }
+        .problem { color: #ff6b6b; font-weight: bold; }
+        .solution { color: #51cf66; font-weight: bold; }
+        .demo-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .demo-button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Zero-Variance Correction Demonstration</h1>
+        <p><strong>Problem:</strong> When users select the same rating (e.g., all 5s) across all categories, the original algorithm produced identical corrected scores, eliminating discrimination between categories.</p>
+        
+        <div class="comparison">
+            <div class="before">
+                <h3 class="problem">❌ Before (Original Algorithm)</h3>
+                <p><strong>Input:</strong> All categories rated 5.00</p>
+                <div class="scores" id="before-scores">
+                    Loading original algorithm results...
+                </div>
+                <p class="problem">Result: All identical scores! No discrimination possible.</p>
+            </div>
+            
+            <div class="after">
+                <h3 class="solution">✅ After (Enhanced Algorithm)</h3>
+                <p><strong>Input:</strong> All categories rated 5.00</p>
+                <div class="scores" id="after-scores">
+                    Loading enhanced algorithm results...
+                </div>
+                <p class="solution">Result: Meaningful differentiation preserved!</p>
+            </div>
+        </div>
+        
+        <h2>Scientific Methodology</h2>
+        <ul>
+            <li><strong>Zero-Variance Detection:</strong> Automatically identifies when all category scores are identical</li>
+            <li><strong>Category Difficulty Indices (CDI):</strong> Research-based weights for different competency types</li>
+            <li><strong>Controlled Differentiation:</strong> Creates minimal but meaningful score differences</li>
+            <li><strong>Preserved Rankings:</strong> Maintains relative positioning based on scientific evidence</li>
+        </ul>
+        
+        <h2>Interactive Demonstration</h2>
+        <button class="demo-button" onclick="simulateIdenticalResponses()">🧪 Simulate All 5s Problem</button>
+        <button class="demo-button" onclick="simulateNormalResponses()">📊 Test Normal Variation</button>
+        <button class="demo-button" onclick="window.location.href='comprehensive-assessment.html'">🚀 Try Full Assessment</button>
+        
+        <div id="live-results" style="margin-top: 20px;"></div>
+    </div>
+
+    <script src="../implementation/javascript/multi-category-corrector.js"></script>
+    <script>
+        // Original algorithm simulation (without CDI)
+        class OriginalCorrector extends MultiCategoryDistortionCorrector {
+            constructor() {
+                super();
+            }
+            
+            calculateRelativeFactor(categoryPosition, responseStyle) {
+                // Original algorithm - no zero-variance handling
+                const { relativeDistance } = categoryPosition;
+                let relativeFactor = 1.0;
+                
+                if (responseStyle === 'high_acquiescence') {
+                    relativeFactor = 1.0 + (relativeDistance * 0.1);
+                }
+                
+                return Math.max(0.85, Math.min(1.15, relativeFactor));
+            }
+        }
+        
+        // Test data - all 5s
+        const identicalTestData = {
+            leadership: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5 },
+            communication: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5 },
+            problem_solving: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5 },
+            teamwork: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5 },
+            adaptability: { q1: 5, q2: 5, q3: 5, q4: 5, q5: 5 }
+        };
+        
+        function runComparison() {
+            // Original algorithm
+            const original = new OriginalCorrector();
+            const originalResults = original.correctMultiCategory(identicalTestData);
+            
+            // Enhanced algorithm
+            const enhanced = new MultiCategoryDistortionCorrector();
+            const enhancedResults = enhanced.correctMultiCategory(identicalTestData);
+            
+            // Display results
+            let beforeHtml = '';
+            Object.entries(originalResults.correctedCategories).forEach(([category, data]) => {
+                beforeHtml += `${category}: 5.00 → <span class="highlight">${data.correctedScore.toFixed(3)}</span>\\n`;
+            });
+            document.getElementById('before-scores').innerHTML = beforeHtml;
+            
+            let afterHtml = '';
+            Object.entries(enhancedResults.correctedCategories).forEach(([category, data]) => {
+                afterHtml += `${category}: 5.00 → <span class="highlight">${data.correctedScore.toFixed(3)}</span>\\n`;
+            });
+            document.getElementById('after-scores').innerHTML = afterHtml;
+        }
+        
+        function simulateIdenticalResponses() {
+            const enhanced = new MultiCategoryDistortionCorrector();
+            const results = enhanced.correctMultiCategory(identicalTestData);
+            
+            let html = '<h3>🧪 Identical Responses Test Results</h3>';
+            html += '<div class="scores">';
+            
+            const sorted = Object.entries(results.correctedCategories)
+                .sort(([,a], [,b]) => b.correctedScore - a.correctedScore);
+            
+            sorted.forEach(([category, data], index) => {
+                html += `Rank #${index + 1}: ${category} = ${data.correctedScore.toFixed(3)}`;
+                if (data.zeroVarianceCorrection) {
+                    html += ` (CDI: ${data.categoryDifficultyIndex.toFixed(3)})`;
+                }
+                html += '\\n';
+            });
+            
+            html += '</div>';
+            html += `<p><strong>Range:</strong> ${Math.min(...Object.values(results.correctedCategories).map(d => d.correctedScore)).toFixed(3)} to ${Math.max(...Object.values(results.correctedCategories).map(d => d.correctedScore)).toFixed(3)}</p>`;
+            
+            document.getElementById('live-results').innerHTML = html;
+        }
+        
+        function simulateNormalResponses() {
+            const normalData = {
+                leadership: { q1: 5, q2: 4, q3: 5, q4: 3, q5: 4 },
+                communication: { q1: 3, q2: 4, q3: 3, q4: 4, q5: 3 },
+                problem_solving: { q1: 4, q2: 5, q3: 4, q4: 4, q5: 5 },
+                teamwork: { q1: 2, q2: 3, q3: 3, q4: 2, q5: 3 },
+                adaptability: { q1: 4, q2: 3, q3: 4, q4: 3, q5: 4 }
+            };
+            
+            const enhanced = new MultiCategoryDistortionCorrector();
+            const results = enhanced.correctMultiCategory(normalData);
+            
+            let html = '<h3>📊 Normal Variation Test Results</h3>';
+            html += '<div class="scores">';
+            
+            Object.entries(results.correctedCategories).forEach(([category, data]) => {
+                html += `${category}: ${data.originalScore.toFixed(2)} → ${data.correctedScore.toFixed(3)}`;
+                html += ` (${data.zeroVarianceCorrection ? 'CDI' : 'Standard'} correction)\\n`;
+            });
+            
+            html += '</div>';
+            html += `<p><strong>Zero-variance correction used:</strong> ${Object.values(results.correctedCategories).some(d => d.zeroVarianceCorrection) ? 'Yes' : 'No'}</p>`;
+            
+            document.getElementById('live-results').innerHTML = html;
+        }
+        
+        // Run initial comparison
+        runComparison();
+    </script>
+</body>
+</html>

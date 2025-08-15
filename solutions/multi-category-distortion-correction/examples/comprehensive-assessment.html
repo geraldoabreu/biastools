@@ -442,6 +442,10 @@
                         '<p><strong>✅ Multi-category correction applied to preserve relative differences</strong></p>' :
                         '<p><strong>ℹ️ No correction needed - balanced response pattern detected</strong></p>'
                     }
+                    ${Object.values(correctedCategories).some(data => data.zeroVarianceCorrection) ?
+                        '<p><strong>🔬 Zero-variance correction applied using Category Difficulty Indices (CDI)</strong></p>' :
+                        ''
+                    }
                 </div>
 
                 <div class="category-results">
@@ -477,6 +481,7 @@
                         <div class="adjustment-info">
                             Rank: #${data.position.rank} | Adjustment: ${data.adjustmentPercent}%
                             <br>Global Factor: ${data.globalFactor.toFixed(3)} | Relative Factor: ${data.relativeFactor.toFixed(3)}
+                            ${data.zeroVarianceCorrection ? `<br><strong>CDI:</strong> ${data.categoryDifficultyIndex?.toFixed(3)} (Zero-variance correction)` : ''}
                         </div>
                     </div>
                 `;

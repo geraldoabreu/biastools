@@ -14,8 +14,81 @@ class MultiCategoryDistortionCorrector {
             minScore: 1.01,                // Minimum allowed score
             maxScore: 5.0,                 // Maximum allowed score
             debugMode: false,              // Enable detailed logging
+            zeroVarianceThreshold: 0.01,   // Threshold for detecting zero variance
+            categoryDifficultyAdjustment: 0.08, // Strength of CDI adjustment
             ...options
         };
+        
+        // Category Difficulty Indices (CDI) based on psychometric research
+        // Higher values = more difficult/socially desirable = lower corrected scores
+        this.categoryDifficultyIndices = {
+            // Leadership categories
+            'leadership': 0.15,
+            'decision_making': 0.12,
+            'strategic_thinking': 0.14,
+            
+            // Complex cognitive skills  
+            'problem_solving': 0.10,
+            'critical_thinking': 0.08,
+            'creativity_innovation': 0.06,
+            
+            // Social/interpersonal skills
+            'communication': 0.05,
+            'emotional_intelligence': 0.03,
+            'conflict_resolution': 0.04,
+            
+            // Collaborative skills (baseline)
+            'teamwork': 0.00,
+            'customer_service': -0.02,
+            'negotiation': 0.01,
+            
+            // Adaptive skills
+            'adaptability': -0.05,
+            'time_management': -0.08,
+            'project_management': -0.06,
+            
+            // Technical/concrete skills
+            'technical_skills': -0.10,
+            
+            // Default for unknown categories
+            'default': 0.00
+        };
+    }
+
+    /**
+     * Get Category Difficulty Index for a given category
+     */
+    getCategoryDifficultyIndex(categoryId) {
+        // Normalize category ID to handle variations
+        const normalizedId = categoryId.toLowerCase().replace(/[_\-\s]/g, '_');
+        
+        // Direct match
+        if (this.categoryDifficultyIndices[normalizedId] !== undefined) {
+            return this.categoryDifficultyIndices[normalizedId];
+        }
+        
+        // Partial matching for common variations
+        for (const [key, value] of Object.entries(this.categoryDifficultyIndices)) {
+            if (normalizedId.includes(key) || key.includes(normalizedId)) {
+                return value;
+            }
+        }
+        
+        // Default for unknown categories
+        return this.categoryDifficultyIndices.default;
+    }
+
+    /**
+     * Detect if we have a zero-variance scenario (all scores identical)
+     */
+    isZeroVarianceScenario(categoryScores) {
+        const scores = Object.values(categoryScores);
+        const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const variance = scores.reduce((acc, val) => 
+            acc + Math.pow(val - mean, 2), 0
+        ) / scores.length;
+        
+        return variance < this.options.zeroVarianceThreshold;
     }
 
     /**
@@ -220,9 +293,25 @@ class MultiCategoryDistortionCorrector {
     /**
      * Calculate relative preservation factor for a category
      */
-    calculateRelativeFactor(categoryPosition, responseStyle) {
+    calculateRelativeFactor(categoryPosition, responseStyle, categoryId, isZeroVariance = false) {
         const { relativeDistance, isAboveAverage } = categoryPosition;
         let relativeFactor = 1.0;
+        
+        // Handle zero-variance scenario (all scores identical)
+        if (isZeroVariance) {
+            const cdi = this.getCategoryDifficultyIndex(categoryId);
+            
+            // Use Category Difficulty Index to create minimal differentiation
+            // More difficult/socially desirable categories get slightly lower relative factors
+            relativeFactor = 1.0 - (cdi * this.options.categoryDifficultyAdjustment);
+            
+            if (this.options.debugMode) {
+                console.log(`Zero-variance CDI adjustment for ${categoryId}: CDI=${cdi.toFixed(3)}, factor=${relativeFactor.toFixed(3)}`);
+            }
+            
+            // Ensure factor stays within reasonable bounds for zero-variance scenarios
+            return Math.max(0.92, Math.min(1.08, relativeFactor));
+        }
         
         // For balanced responses, no additional adjustment needed
         if (responseStyle === 'balanced') {
@@ -262,8 +351,21 @@ class MultiCategoryDistortionCorrector {
     applyCategoryCorrections(positioning, responseStyle, globalFactor) {
         const correctedCategories = {};
         
+        // Extract scores for variance detection
+        const categoryScores = {};
         for (const [categoryId, position] of Object.entries(positioning)) {
-            const relativeFactor = this.calculateRelativeFactor(position, responseStyle);
+            categoryScores[categoryId] = position.score;
+        }
+        
+        // Detect if we have zero variance (all scores identical)
+        const isZeroVariance = this.isZeroVarianceScenario(categoryScores);
+        
+        if (this.options.debugMode && isZeroVariance) {
+            console.log('Zero-variance scenario detected - applying Category Difficulty Index corrections');
+        }
+        
+        for (const [categoryId, position] of Object.entries(positioning)) {
+            const relativeFactor = this.calculateRelativeFactor(position, responseStyle, categoryId, isZeroVariance);
             
             // Apply combined correction
             const originalScore = position.score;
@@ -280,7 +382,9 @@ class MultiCategoryDistortionCorrector {
                 relativeFactor,
                 totalAdjustment: correctedScore / originalScore,
                 adjustmentPercent: ((correctedScore / originalScore - 1) * 100).toFixed(2),
-                position: { ...position }
+                position: { ...position },
+                categoryDifficultyIndex: isZeroVariance ? this.getCategoryDifficultyIndex(categoryId) : null,
+                zeroVarianceCorrection: isZeroVariance
             };
         }
         
